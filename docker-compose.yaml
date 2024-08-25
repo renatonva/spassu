@@ -56,7 +56,7 @@ services:
       - spassus
 
   redis:
-    container_name: redis
+    container_name: redis-spassus
     build:
       context: ./docker/redis
       dockerfile: Dockerfile
@@ -69,7 +69,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: node
+    container_name: node-spassus
     volumes:
       - .:/var/www    # Exemplo de volume corrigido
     ports:
@@ -79,7 +79,7 @@ services:
       
   adminer:
     image: adminer:latest
-    container_name: adminer
+    container_name: adminer-spassus
     ports:
       - "9997:8080"
     networks:
