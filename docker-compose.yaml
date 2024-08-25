@@ -1,0 +1,96 @@
+version: "3.8"
+services:
+
+  db:
+    image: postgres:latest
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      POSTGRES_DB: spassus
+      POSTGRES_USER: renato
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.docker/database/data:/var/lib/postgresql/data
+    networks:
+      - spassus
+
+  php:
+    container_name: php-spassus
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - .:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: spassus
+      DB_USERNAME: renato
+      DB_PASSWORD: 123456
+    depends_on:
+      - db
+    networks:
+      - spassus
+
+  nginx:
+    container_name: nginx-spassus
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - '8080:80'
+      - '443:443'
+    depends_on:
+      - db
+      - php
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - spassus
+
+  redis:
+    container_name: redis-spassus
+    build:
+      context: ./docker/redis
+      dockerfile: Dockerfile
+    ports:
+      - '6379:6379'
+    networks:
+      - spassus
+
+  node:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: node
+    volumes:
+      - .:/var/www    # Exemplo de volume corrigido
+    ports:
+      - "5173:5173"
+    networks:
+      - spassus
+      
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    ports:
+      - "9997:8080"
+    networks:
+      - spassus
+    depends_on:
+      - db
+
+networks:
+  spassus:
+    driver: bridge
+
+volumes:
+  setup-data:
+    driver: local
