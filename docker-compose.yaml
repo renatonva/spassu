@@ -56,7 +56,7 @@ services:
       - spassus
 
   redis:
-    container_name: redis-spassus
+    container_name: redis
     build:
       context: ./docker/redis
       dockerfile: Dockerfile
