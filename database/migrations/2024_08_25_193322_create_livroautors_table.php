@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('livroautor', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('livro_cod')->index()->constrained('livros', 'cod')->onDelete('cascade');
-            $table->foreignUuid('auto_codau')->index()->constrained('autor', 'codAu')->onDelete('cascade');
+            $table->foreignUuid('livro_id')->index()->constrained('livros', 'id')->onDelete('cascade');
+            $table->foreignUuid('autor_id')->index()->constrained('autor', 'id')->onDelete('cascade');
             $table->timestamps();
         });
     }

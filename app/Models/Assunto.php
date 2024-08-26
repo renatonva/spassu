@@ -11,12 +11,12 @@ class Assunto extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $fillable = ['codas', 'descricao'];
+    protected $fillable = ['id', 'descricao'];
 
-    protected $primaryKey = 'codas';
+    protected $primaryKey = 'id';
 
     public function livros()
     {
-        return $this->belongsToMany(Livro::class, 'livro_assunto', 'assunto_codas', 'livro_cod');
+        return $this->belongsToMany(Livro::class, 'livroassunto');
     }
 }

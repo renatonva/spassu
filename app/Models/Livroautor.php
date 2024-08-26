@@ -11,5 +11,5 @@ class Livroautor extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $fillable = ['cod', 'livrocod', 'autorcodas'];
+    protected $fillable = ['id', 'livro_id', 'autor_id'];
 }

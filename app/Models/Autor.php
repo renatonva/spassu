@@ -12,12 +12,12 @@ class Autor extends Model
     
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $fillable = ['codAu', 'nome'];
+    protected $fillable = ['id', 'nome'];
 
-    protected $primaryKey = 'codAu';
+    protected $primaryKey = 'id';
 
     public function livros()
     {
-        return $this->belongsToMany(Livro::class, 'livro_autor', 'auto_codau', 'livro_cod');
+        return $this->belongsToMany(Livro::class, 'livroautor');
     }
 }

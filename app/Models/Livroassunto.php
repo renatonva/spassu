@@ -12,5 +12,5 @@ class Livroassunto extends Model
 
     use HasFactory, HasUuids, SoftDeletes;
 
-    protected $fillable = ['cod', 'livrocod', 'assuntocodas'];
+    protected $fillable = ['id', 'livro_id', 'assunto_id'];
 }

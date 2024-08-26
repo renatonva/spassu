@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Assunto;
 use Illuminate\Http\Request;
 
 class AssuntoController extends Controller
@@ -13,7 +14,8 @@ class AssuntoController extends Controller
      */
     public function index()
     {
-        //
+        $assuntos = Assunto::all();
+        return view('assuntos.index', compact('assuntos'));
     }
 
     /**
@@ -23,7 +25,7 @@ class AssuntoController extends Controller
      */
     public function create()
     {
-        //
+        return view('assuntos.create');
     }
 
     /**
@@ -34,7 +36,16 @@ class AssuntoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'descricao' => 'required|max:20',
+        ]);
+
+        Assunto::create([
+            'descricao' => $request->descricao,
+        ]);
+
+        return redirect()->route('assuntos.index')->with('success', 'O Assunto foi criado com sucesso.');
+
     }
 
     /**
@@ -43,9 +54,9 @@ class AssuntoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Assunto $assunto)
     {
-        //
+        return view('assuntos.show', compact('assunto'));
     }
 
     /**
@@ -54,9 +65,9 @@ class AssuntoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Assunto $assunto)
     {
-        //
+        return view('assuntos.edit', compact('assunto'));
     }
 
     /**
@@ -66,9 +77,17 @@ class AssuntoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Assunto $assunto)
     {
-        //
+        $request->validate([
+            'descricao' => 'required|max:20',
+        ]);
+
+        $assunto->update([
+            'descricao' => $request->descricao,
+        ]);
+
+        return redirect()->route('assuntos.index')->with('success', 'O Assunto foi atualizado com sucesso.');
     }
 
     /**
@@ -77,8 +96,10 @@ class AssuntoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Assunto $assunto)
     {
-        //
+        $assunto->delete();
+
+        return redirect()->route('assuntos.index')->with('success', 'O Assunto foi excluído com sucesso.');
     }
 }

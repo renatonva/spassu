@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AssuntoController;
+use App\Http\Controllers\AutorController;
+use App\Http\Controllers\LivroController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::resource('livros', LivroController::class);
+Route::resource('assuntos', AssuntoController::class);
+Route::resource('autores', AutorController::class);

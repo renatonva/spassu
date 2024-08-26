@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('livroassuntos', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('livro_cod')->index()->constrained('livros', 'cod')->onDelete('cascade');
-            $table->foreignUuid('assunto_codas')->index()->constrained('assuntos', 'codAs')->onDelete('cascade');
+            $table->foreignUuid('livro_id')->index()->constrained('livros', 'id')->onDelete('cascade');
+            $table->foreignUuid('assunto_id')->index()->constrained('assuntos', 'id')->onDelete('cascade');
             $table->timestamps();
         });
     }

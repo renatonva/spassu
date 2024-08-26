@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Assunto;
+use App\Models\Autor;
+use App\Models\Livro;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LivroController extends Controller
 {
@@ -40,22 +44,24 @@ class LivroController extends Controller
         $request->validate([
             'titulo' => 'required|max:40',
             'editora' => 'required|integer',
+            'edicao' => 'required|integer',
             'anoPublicacao' => 'required|max:40',
             'autores' => 'required|array',
             'assuntos' => 'required|array'
         ]);
 
-        $livro = Livro::create([
-            'cod' => Str::uuid(),
-            'titulo' => $request->titulo,
-            'editora' => $request->editora,
-            'anoPublicacao' => $request->anoPublicacao
-        ]);
+        DB::transaction(function () use ($request) {
+            $livro = Livro::create([
+                'titulo' => $request->titulo,
+                'editora' => $request->editora,
+                'edicao' => $request->edicao,
+                'ano_publicacao' => $request->ano_publicacao,
+            ]);
 
-        $livro->autores()->sync($request->autores);
-        $livro->assuntos()->sync($request->assuntos);
-
-        return redirect()->route('livros.index')->with('success', 'Livro cadastrado com sucesso!');
+            $livro->autores()->attach($request->autores);
+            $livro->assuntos()->attach($request->assuntos);
+        });    
+        return redirect()->route('livros.index')->with('success', 'O Livro foi cadastrado com sucesso.');
     }
 
     /**
@@ -64,9 +70,9 @@ class LivroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Livro $livro)
     {
-        //
+        return view('livros.show', compact('livro'));
     }
 
     /**
@@ -77,7 +83,9 @@ class LivroController extends Controller
      */
     public function edit($id)
     {
-        //
+        $autores = Autor::all();
+        $assuntos = Assunto::all();
+        return view('livros.edit', compact('livro', 'autores', 'assuntos'));
     }
 
     /**
@@ -87,10 +95,32 @@ class LivroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Livro $livro)
     {
-        //
+        $request->validate([
+            'titulo' => 'required|max:40',
+            'editora' => 'required|max:40',
+            'edicao' => 'required|integer',
+            'ano_publicacao' => 'required|digits:4',
+            'autores' => 'required|array',
+            'assuntos' => 'required|array',
+        ]);
+
+        DB::transaction(function () use ($request, $livro) {
+            $livro->update([
+                'titulo' => $request->titulo,
+                'editora' => $request->editora,
+                'edicao' => $request->edicao,
+                'ano_publicacao' => $request->ano_publicacao,
+            ]);
+
+            $livro->autores()->sync($request->autores);
+            $livro->assuntos()->sync($request->assuntos);
+        });
+
+        return redirect()->route('livros.index')->with('success', 'O Livro foi atualizado com sucesso.');
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -98,8 +128,8 @@ class LivroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Livro $livro)
     {
-        //
+        return redirect()->route('livros.index')->with('success', 'O Livro foi excluído com sucesso.');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Autor;
 use Illuminate\Http\Request;
 
 class AutorController extends Controller
@@ -13,7 +14,8 @@ class AutorController extends Controller
      */
     public function index()
     {
-        //
+        $autores = Autor::all();
+        return view('autores.index', compact('autores'));
     }
 
     /**
@@ -23,7 +25,7 @@ class AutorController extends Controller
      */
     public function create()
     {
-        //
+        return view('autores.create');
     }
 
     /**
@@ -34,7 +36,16 @@ class AutorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nome' => 'required|max:40',
+        ]);
+
+        Autor::create([
+            'nome' => $request->nome,
+        ]);
+
+        return redirect()->route('autores.index')->with('success', 'O Autor foi criado com sucesso.');
+
     }
 
     /**
@@ -43,9 +54,9 @@ class AutorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Autor $autor)
     {
-        //
+        return view('autores.show', compact('autor'));
     }
 
     /**
@@ -54,9 +65,9 @@ class AutorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Autor $autor)
     {
-        //
+        return view('autores.edit', compact('autor'));
     }
 
     /**
@@ -66,9 +77,18 @@ class AutorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Autor $autor)
     {
-        //
+        $request->validate([
+            'nome' => 'required|max:40',
+        ]);
+
+        $autor->update([
+            'nome' => $request->nome,
+        ]);
+
+        return redirect()->route('autores.index')->with('success', 'O Autor foi atualizado com sucesso.');
+
     }
 
     /**
@@ -77,8 +97,11 @@ class AutorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Autor $autor)
     {
-        //
+        $autor->delete();
+
+        return redirect()->route('autores.index')->with('success', 'O Autor foi excluído com sucesso.');
+
     }
 }

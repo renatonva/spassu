@@ -14,9 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('livros', function (Blueprint $table) {
-            $table->uuid('cod')->primary();
+            $table->uuid('id')->primary();
             $table->string('titulo', 40);
             $table->integer('editora');
+            $table->integer('edicao');
             $table->string('anoPublicacao', 40);
             $table->timestamps();
         });
